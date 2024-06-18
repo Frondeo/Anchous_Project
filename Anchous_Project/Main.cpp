@@ -2,7 +2,7 @@
 //
 
 #include "framework.h"
-#include "Anchous_Project.h"
+#include "Main.h"
 
 #define MAX_LOADSTRING 100
 
@@ -16,6 +16,21 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+
+//---------------------------------------THREE----------------------------------------------
+
+const int Gl_scale = 3;
+const int Brick_Width = 15;
+const int Brick_Hight = 7;
+
+const int Cell_Width = 16;
+const int Cell_Height = 8;
+
+const int Level_X_Offset = 8;
+const int Level_Y_Offset = 6;
+
+
 
 
 //------------------------------------------------------------------------------------------
@@ -95,7 +110,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, TRUE); // корректирует структуру окна пользователя
      
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);
+      50, 50, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);
 
    if (hWnd == 0)
    {
@@ -107,13 +122,81 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    return TRUE;
 }
+//----------------------------------------TWO---------------------------------------------
 
-
-//------------------------------------------------------------------------------------------
-void Draw_Frame(HDC hdc)
+void Draw_Brick(HDC hdc, int x, int y, bool is_green)
 {
+ //перенеси в область глобальных констант
+ /*  const int Gl_scale = 3;
+   const int Brick_Width = 15;
+   const int Brick_Hight = 7;*/
 
+   HPEN pen;
+   HBRUSH brush;
 
+   if (is_green)
+   {
+      pen = CreatePen(PS_SOLID, 0, RGB(117, 249, 77));
+      brush = CreateSolidBrush(RGB(117, 249, 77));
+
+      /*SelectObject(hdc, green_pen);
+      SelectObject(hdc, green_brush);*/
+
+      //Rectangle(hdc, x * 3, y * 3, (x + 15) * 3, (y + 7) * 3);
+   }
+   else
+   {
+      pen = CreatePen(PS_SOLID, 0, RGB(0, 35, 245));
+      brush = CreateSolidBrush(RGB(0, 35, 245));
+
+      /*SelectObject(hdc, blue_pen);
+      SelectObject(hdc, blue_brush);*/
+
+      //Rectangle(hdc, x * 3, y * 3, (x + 15) * 3, (y + 7) * 3);
+   }
+
+   SelectObject(hdc, pen);
+   SelectObject(hdc, brush);
+
+   Rectangle(hdc, x * Gl_scale, y * Gl_scale, (x + Brick_Width) * Gl_scale, (y + Brick_Hight) * Gl_scale);
+}
+
+//---------------------------------------ONE----------------------------------------------
+void Draw_Frame(HDC hdc) //инициализация функции
+{
+   //HPEN red_pen = CreatePen(PS_SOLID, 0, RGB(0, 35, 245));
+   //HBRUSH red_brush = CreateSolidBrush(RGB(0, 35, 245));
+
+   //SelectObject(hdc, red_pen);
+   //SelectObject(hdc, red_brush);
+   //Rectangle (hdc, 8*3, 6*3, (8+15)*3, (6+7)*3);
+
+   //HPEN blue_pen = CreatePen(PS_SOLID, 0, RGB(117, 249, 77));
+   //HBRUSH blue_brush = CreateSolidBrush(RGB(117, 249, 77));
+
+   //SelectObject(hdc, blue_pen);
+   //SelectObject(hdc, blue_brush);
+   //Rectangle(hdc, 8 * 3, (6 + 8) * 3, (8 + 15) * 3, (6 + 7 + 8) * 3);
+
+   int i;
+   int j;
+
+   //---------------------------------------FOUTH-------------------------------------------
+   for(i = 0; i < 14; i++)
+   {
+      for (j = 0; j < 19; j++)
+      {
+         Draw_Brick(hdc, Level_X_Offset + j * Cell_Width, Level_Y_Offset + i * Cell_Height, true);
+      }
+   }
+
+   //for (j = 0; j < 19; j++)
+   //{
+   //   //Draw_Brick(hdc, 8 + i * (Brick_Width + 1), 6, false);
+   //   //Draw_Brick(hdc, 8 + i * (Brick_Width + 1), 6 + 8, true);
+   //   Draw_Brick(hdc, 8 + i * Cell_Width, 6, false);
+   //   Draw_Brick(hdc, 8 + i * Cell_Width, 6 + Cell_Height, true);
+   //}
 }
 
 
@@ -144,11 +227,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
-            Draw_Frame(hdc);
-            {
+            Draw_Frame(hdc); //вызов функции
             
-            
-            }
 
             EndPaint(hWnd, &ps);
         }
