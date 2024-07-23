@@ -17,48 +17,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-enum EBrick_Type
-{
-   EBT_None, // None = 7,
-   EBT_Red,
-   EBT_Blue
-};
-
-//int A = EBT_Red;
-
-
-HPEN Brick_Red_Pen, Brick_Blue_Pen;
-HBRUSH  Brick_Red_Brush, Brick_Blue_Brush;
-
-const int Gl_scale = 3;
-const int Brick_Width = 15;
-const int Brick_Hight = 7;
-
-const int Cell_Width = 16;
-const int Cell_Height = 8;
-
-const int Level_X_Offset = 8;
-const int Level_Y_Offset = 6;
-
-int Level_01[14][12] = 
-{
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-};
-
-
 
 //------------------------------------------------------------------------------------------
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -114,7 +72,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ANCHOUSPROJECT));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = CreateSolidBrush(RGB(204, 127, 27));
+    wcex.hbrBackground  = CreateSolidBrush(RGB(15, 63, 31));
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_ANCHOUSPROJECT);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -122,15 +80,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-void Init()
-{
-   Brick_Red_Pen = CreatePen(PS_SOLID, 0, RGB(117, 249, 77));
-   Brick_Red_Brush = CreateSolidBrush(RGB(117, 249, 77));
-
-   Brick_Blue_Pen = CreatePen(PS_SOLID, 0, RGB(0, 35, 245));
-   Brick_Blue_Brush = CreateSolidBrush(RGB(0, 35, 245));
-}
 //------------------------------------------------------------------------------------------
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -160,83 +111,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 //----------------------------------------TWO---------------------------------------------
 
-void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
-{
-
-   //создание карандаша и кисти внутри функции ограничено ОС !!!
-   //Для этого выносим их в область глобальных определений
-
-   HPEN pen;
-   HBRUSH brush; 
-
-   switch(brick_type)
-   {
-   case EBT_None:
-      return;
-
-   case EBT_Red:
-      pen = Brick_Red_Pen;
-      brush = Brick_Red_Brush;
-      break;
-
-   case EBT_Blue:
-      pen = Brick_Blue_Pen;
-      brush = Brick_Blue_Brush;
-      break;
-
-   default:
-      return;
-   }
-
-   SelectObject(hdc, pen);
-   SelectObject(hdc, brush);
-
-   RoundRect(hdc, x * Gl_scale, y * Gl_scale, (x + Brick_Width) * Gl_scale, (y + Brick_Hight) * Gl_scale, 6, 6);
-}
-//-----------------------------------------------------------------
-
-void Draw_Level(HDC hdc) //инициализация функции
-{
-   int i;
-   int j;
-
-  
-   for(i = 0; i < 14; i++)
-   {
-      for (j = 0; j < 12; j++)
-      {
-         Draw_Brick(hdc, Level_X_Offset + j * Cell_Width, Level_Y_Offset + i * Cell_Height, (EBrick_Type)Level_01[i][j]);
-      }
-   }
-
-}
-//-----------------------------------------------------------------
-
-void Draw_Frame(HDC hdc)
-{
-   Draw_Level(hdc);
-}
-//-----------------------------------------------------------------
-
-
-void Draw_Rect(HDC hdc, int a, int b)
-{
-   const int hd = 50;
-   const int wd = 100;
-   
-   HPEN pen;
-   HBRUSH brush;
-
-   pen = CreatePen(PS_SOLID, 0, RGB(153, 153, 153));
-   brush = CreateSolidBrush(RGB(153, 153, 153));
-
-   SelectObject(hdc, pen);
-   SelectObject(hdc, brush);
-
-   Rectangle(hdc, a, b, hd, wd);
-}
-
+//
+//void Draw_Rect(HDC hdc, int a, int b)
+//{
+//   const int hd = 50;
+//   const int wd = 100;
+//   
+//   HPEN pen;
+//   HBRUSH brush;
+//
+//   pen = CreatePen(PS_SOLID, 0, RGB(153, 153, 153));
+//   brush = CreateSolidBrush(RGB(153, 153, 153));
+//
+//   SelectObject(hdc, pen);
+//   SelectObject(hdc, brush);
+//
+//   Rectangle(hdc, a, b, hd, wd);
+//}
 //------------------------------------------------------------------------------------------
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -262,7 +155,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-        
 
             Draw_Frame(hdc); //вызов функции
             
