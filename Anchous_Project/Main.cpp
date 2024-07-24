@@ -17,7 +17,6 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-
 //------------------------------------------------------------------------------------------
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -57,7 +56,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-
 //------------------------------------------------------------------------------------------
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -81,7 +79,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 }
 
 //------------------------------------------------------------------------------------------
-
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -109,27 +106,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    return TRUE;
 }
+
 //----------------------------------------TWO---------------------------------------------
-
-//
-//void Draw_Rect(HDC hdc, int a, int b)
-//{
-//   const int hd = 50;
-//   const int wd = 100;
-//   
-//   HPEN pen;
-//   HBRUSH brush;
-//
-//   pen = CreatePen(PS_SOLID, 0, RGB(153, 153, 153));
-//   brush = CreateSolidBrush(RGB(153, 153, 153));
-//
-//   SelectObject(hdc, pen);
-//   SelectObject(hdc, brush);
-//
-//   Rectangle(hdc, a, b, hd, wd);
-//}
-//------------------------------------------------------------------------------------------
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -172,7 +150,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
-
 
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {

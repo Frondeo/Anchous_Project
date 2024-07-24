@@ -1,4 +1,4 @@
-#include "Engine.h"
+п»ї#include "Engine.h"
 
 
 enum EBrick_Type
@@ -10,8 +10,8 @@ enum EBrick_Type
 
 //int A = EBT_Red;
 
-HPEN Brick_Red_Pen, Brick_Blue_Pen;
-HBRUSH  Brick_Red_Brush, Brick_Blue_Brush;
+HPEN Highlight_Pen, Brick_Red_Pen, Brick_Blue_Pen, Platform_Circle_Pen, Platform_Inner_Pen;
+HBRUSH  Brick_Red_Brush, Brick_Blue_Brush, Platform_Circle_Brush, Platform_Inner_Brush;
 
 const int Gl_scale = 3;
 const int Brick_Width = 15;
@@ -22,6 +22,10 @@ const int Cell_Height = 8;
 
 const int Level_X_Offset = 8;
 const int Level_Y_Offset = 6;
+
+
+int Circle_Size = 7;
+int Inner_Width = 21;
 
 int Level_01[14][12] =
 {
@@ -40,24 +44,42 @@ int Level_01[14][12] =
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
+//------------------------------------------------------------------------------------------
+
+void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush)
+{
+   // С‚Р°Рє РєР°Рє РЅСѓР¶РЅРѕ РІРµСЂРЅСѓС‚СЊ Р±РѕР»РµРµ РѕРґРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР° С‚Рѕ РёСЃРїРѕР»СЊР·СѓРµРј & 
+   pen = CreatePen(PS_SOLID, 0, RGB(r, g, b)); // РїРµСЂРµРґР°С‡Р° Р·РЅР°С‡РµРЅРёСЏ РїРѕ РїР°СЂР°РјРµС‚СЂСѓ &
+   brush = CreateSolidBrush(RGB(r, g, b)); // РїРµСЂРµРґР°С‡Р° Р·РЅР°С‡РµРЅРёСЏ РїРѕ РїР°СЂР°РјРµС‚СЂСѓ &
+}
 
 //------------------------------------------------------------------------------------------
-void Init() //Настройка уровня на старте
+void Init() //РќР°СЃС‚СЂРѕР№РєР° РєР°СЂР°РЅРґР°С€РµР№ Рё РєРёСЃС‚РµР№
 {
-   Brick_Red_Pen = CreatePen(PS_SOLID, 0, RGB(255, 85, 85));
-   Brick_Red_Brush = CreateSolidBrush(RGB(255, 85, 85));
+   Highlight_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255));
+   //Brick_Red_Pen = CreatePen(PS_SOLID, 0, RGB(255, 85, 85));
+   //Brick_Red_Brush = CreateSolidBrush(RGB(255, 85, 85));
+   Create_Pen_Brush(255, 85, 85, Brick_Red_Pen, Brick_Red_Brush);
 
-   Brick_Blue_Pen = CreatePen(PS_SOLID, 0, RGB(0, 35, 245));
-   Brick_Blue_Brush = CreateSolidBrush(RGB(0, 35, 245));
+   //Brick_Blue_Pen = CreatePen(PS_SOLID, 0, RGB(0, 35, 245));
+   //Brick_Blue_Brush = CreateSolidBrush(RGB(0, 35, 245));
+   Create_Pen_Brush(0, 35, 245, Brick_Blue_Pen, Brick_Blue_Brush);
+
+   //Platform_Circle_Pen = CreatePen(PS_SOLID, 0, RGB(151, 0, 0));
+   //Platform_Circle_Brush = CreateSolidBrush(RGB(151, 0, 0));
+   Create_Pen_Brush(151, 0, 0, Platform_Circle_Pen, Platform_Circle_Brush);
+
+   //Platform_Inner_Pen = CreatePen(PS_SOLID, 0, RGB(0, 128, 192));
+   //Platform_Inner_Brush = CreateSolidBrush(RGB(0, 128, 192));
+   Create_Pen_Brush(0, 128, 192, Platform_Inner_Pen, Platform_Inner_Brush);
 }
 //------------------------------------------------------------------------------------------
 
 void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
 {
-
-   //создание карандаша и кисти внутри функции ограничено ОС !!!
-   //Для этого выносим их в область глобальных определений
-   //Все компоненты цвета делаем кратным 16
+   //СЃРѕР·РґР°РЅРёРµ РєР°СЂР°РЅРґР°С€Р° Рё РєРёСЃС‚Рё РІРЅСѓС‚СЂРё С„СѓРЅРєС†РёРё РѕРіСЂР°РЅРёС‡РµРЅРѕ РћРЎ !!!
+   //Р”Р»СЏ СЌС‚РѕРіРѕ РІС‹РЅРѕСЃРёРј РёС… РІ РѕР±Р»Р°СЃС‚СЊ РіР»РѕР±Р°Р»СЊРЅС‹С… РѕРїСЂРµРґРµР»РµРЅРёР№
+   //Р’СЃРµ РєРѕРјРїРѕРЅРµРЅС‚С‹ С†РІРµС‚Р° РґРµР»Р°РµРј РєСЂР°С‚РЅС‹Рј 16
 
    HPEN pen;
    HBRUSH brush;
@@ -80,7 +102,7 @@ void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
    default:
       return;
    }
-
+   //СЂРёСЃСѓРµРј РєРёСЂРїРёС‡Рё
    SelectObject(hdc, pen);
    SelectObject(hdc, brush);
 
@@ -88,7 +110,7 @@ void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
 }
 //------------------------------------------------------------------------------------------
 
-void Draw_Level(HDC hdc) //инициализация функции вывода всех кирпичей
+void Draw_Level(HDC hdc) //СЂРёСЃСѓРµРј РІС‹РІРѕРґ РІСЃРµС… РєРёСЂРїРёС‡РµР№
 {
    int i;
    int j;
@@ -101,12 +123,34 @@ void Draw_Level(HDC hdc) //инициализация функции вывода всех кирпичей
          Draw_Brick(hdc, Level_X_Offset + j * Cell_Width, Level_Y_Offset + i * Cell_Height, (EBrick_Type)Level_01[i][j]);
       }
    }
+}
+//------------------------------------------------------------------------------------------
 
+void Draw_Platform(HDC hdc, int x, int y)
+{
+  //СЂРёСЃСѓРµРј С€Р°СЂРёРєРё
+   SelectObject(hdc, Platform_Circle_Pen);
+   SelectObject(hdc, Platform_Circle_Brush);
+
+   Ellipse(hdc, x * Gl_scale, y * Gl_scale, (x + Circle_Size) * Gl_scale, (y + Circle_Size) * Gl_scale);
+   Ellipse(hdc, (x + Inner_Width) * Gl_scale, y * Gl_scale, (x + Circle_Size + Inner_Width) * Gl_scale, (y + Circle_Size) * Gl_scale);
+   //СЂРёСЃСѓРµРј Р±Р»РёРє
+   SelectObject(hdc, Highlight_Pen);
+
+   Arc(hdc, (x + 1)* Gl_scale,(y + 1) * Gl_scale, (x + Circle_Size - 1) * Gl_scale, (y + Circle_Size - 1) * Gl_scale,
+      (x + 1 + 1) * Gl_scale, (y + 1) * Gl_scale, (x + 1) * Gl_scale, (y + 1 + 2) * Gl_scale);
+   //СЂРёСЃСѓРµРј СЃСЂРµРґРЅСЋСЋ С‡Р°СЃС‚СЊ
+   SelectObject(hdc, Platform_Inner_Pen);
+   SelectObject(hdc, Platform_Inner_Brush);
+
+   RoundRect(hdc, (x + 4) * Gl_scale, (y + 1) * Gl_scale, (x + 4 + Inner_Width - 1) * Gl_scale, (y + 1 + 5) * Gl_scale, 3 * Gl_scale, 3 * Gl_scale);
 }
 //------------------------------------------------------------------------------------------
 
 void Draw_Frame(HDC hdc)
 {
+   //СЂРёСЃСѓРµРј СѓСЂРѕРІРµРЅСЊ
    Draw_Level(hdc);
+   Draw_Platform(hdc, 50, 100);
 }
 //------------------------------------------------------------------------------------------

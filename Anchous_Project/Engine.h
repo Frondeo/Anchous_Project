@@ -1,8 +1,8 @@
-#pragma once
+п»ї#pragma once
 
 #include <Windows.h>
 
-//Интерфейс модуля Engine.cpp
+//РРЅС‚РµСЂС„РµР№СЃ РјРѕРґСѓР»СЏ Engine.cpp
 void Init();
 void Draw_Frame(HDC hdc);
 
